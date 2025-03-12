@@ -1,0 +1,13 @@
+# Ignorera dataset och stora filer
+data/
+models/
+*.csv
+*.pkl
+*.h5
+
+# Ignorera Python-cachefiler
+__pycache__/
+*.pyc
+
+# Ignorera Jupyter checkpoints
+.ipynb_checkpoints/
