@@ -1,6 +1,5 @@
 # Ignorera dataset och stora filer
 data/
-models/
 *.csv
 *.h5
 
