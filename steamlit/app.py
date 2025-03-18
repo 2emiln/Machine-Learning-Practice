@@ -18,7 +18,7 @@ def preprocess_image(image):
     gray = np.array(image.convert("L"))
     
     # Omvandla till svartvitt
-    _, binary = cv2.threshold(gray, 128, 255, cv2.THRESH_BINARY_INV)
+    _, binary = cv2.threshold(gray, 50, 255, cv2.THRESH_BINARY_INV)
     
     # Förstärka strecken
     kernel = np.ones((2,2), np.uint8)
@@ -49,7 +49,7 @@ if uploaded_file is not None:
     st.image(image, caption="Uppladdad bild", use_column_width=False)
     
     # Gör en förutsägelse
-    prediction = model.predict(processed_image)
+    prediction = model.predict(processed_image)[0]
     
     # Visa resultat
-    st.success(f"Modellen förutspår att detta är en **{prediction[0]}**!")
+    st.success(f"Modellen förutspår att detta är en **{prediction}**!")
