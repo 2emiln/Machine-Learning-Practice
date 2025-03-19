@@ -8,70 +8,9 @@ from streamlit_drawable_canvas import st_canvas
 ml_model = joblib.load("models/best_model_RF.pkl")
 
 def preprocess_and_center_image(img):
-    """ Gör ritade bilder lika uppladdade bilder genom att invertera färger. """
-    
-    # 🔥 1. Omvandla RGBA till RGB (viktigt för ritade siffror från st_canvas)
-    if img.shape[-1] == 4:  # Kontrollera om det finns en alfakanal (RGBA)
-        img = cv2.cvtColor(img, cv2.COLOR_RGBA2RGB)
+ 
 
-    # 🔥 2. Konvertera till gråskala
-    img_gray = cv2.cvtColor(img, cv2.COLOR_RGB2GRAY)  
-
-    # 🔥 3. Förbättra kontrasten med binär tröskel
-    _, img_binary = cv2.threshold(img_gray, 50, 255, cv2.THRESH_BINARY)
-
-    # 🔥 4. **Invertera bilden så att siffran blir svart på vit bakgrund**
-    img_binary = cv2.bitwise_not(img_binary)
-
-    # 🔥 5. Förstärk siffran med dilation (gör tunna streck tjockare)
-    kernel = np.ones((5,5), np.uint8)  
-    img_enhanced = cv2.dilate(img_binary, kernel, iterations=2)
-
-    # 🔥 6. Hitta bounding box för siffran
-    coords = cv2.findNonZero(img_enhanced)
-    if coords is not None:
-        x, y, w, h = cv2.boundingRect(coords)
-
-        # 🔥 7. Lägg till padding så att vi inte klipper siffran
-        padding = 20  
-        x = max(x - padding, 0)
-        y = max(y - padding, 0)
-        w = min(w + 2 * padding, img_enhanced.shape[1] - x)
-        h = min(h + 2 * padding, img_enhanced.shape[0] - y)
-
-        img_crop = img_enhanced[y:y+h, x:x+w]
-    else:
-        img_crop = np.zeros((28, 28), dtype=np.uint8)
-
-    # 🔥 8. Se till att siffran blir tillräckligt stor i rutan
-    size = max(w, h, 24)  
-    centered_img = np.ones((size, size), dtype=np.uint8) * 255  # **Ändrat från 0 till 255**
-
-    # 🔥 9. Säkerställ att siffran är i mitten
-    if coords is not None:
-        x_offset = (size - w) // 2
-        y_offset = (size - h) // 2
-        centered_img[y_offset:y_offset+h, x_offset:x_offset+w] = img_crop
-
-    # 🔥 10. Skala om med en bättre interpolationsmetod
-    img_resized = cv2.resize(centered_img, (28, 28), interpolation=cv2.INTER_NEAREST)
-
-    # 🔥 11. Extra binär tröskel efter skalning för skarpa kanter
-    _, img_final = cv2.threshold(img_resized, 128, 255, cv2.THRESH_BINARY)
-
-    # 🔥 12. Normalisering (se till att vi får exakta 0 och 1)
-    img_normalized = img_final / 255.0
-    img_normalized = np.clip(img_normalized, 0, 1)
-
-    # 🔥 13. Flattena för Scikit-Learn
-    img_flattened = img_normalized.flatten().reshape(1, -1)
-
-    return img_flattened, img_final
-
-
-
-
-
+ 
 
 
 def draw():
