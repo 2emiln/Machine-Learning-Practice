@@ -7,12 +7,6 @@ from streamlit_drawable_canvas import st_canvas
 # Ladda modellen
 ml_model = joblib.load("models/best_model_RF.pkl")
 
-def preprocess_and_center_image(img):
- 
-
- 
-
-
 def draw():
     st.title("Ritningssidan")
     st.write("Här kan du rita en siffra (0-9).")
