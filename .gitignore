@@ -1,4 +1,5 @@
 # Ignorera dataset och stora filer
+.vscode/
 data/
 *.csv
 *.h5
